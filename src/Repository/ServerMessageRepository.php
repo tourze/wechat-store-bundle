@@ -4,7 +4,6 @@ namespace WechatStoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use DoctrineEnhanceBundle\Repository\CommonRepositoryAware;
 use WechatStoreBundle\Entity\ServerMessage;
 
 /**
@@ -15,7 +14,6 @@ use WechatStoreBundle\Entity\ServerMessage;
  */
 class ServerMessageRepository extends ServiceEntityRepository
 {
-    use CommonRepositoryAware;
 
     public function __construct(ManagerRegistry $registry)
     {

@@ -4,7 +4,6 @@ namespace WechatStoreBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use DoctrineEnhanceBundle\Repository\CommonRepositoryAware;
 use WechatStoreBundle\Entity\Category;
 
 /**
@@ -15,7 +14,6 @@ use WechatStoreBundle\Entity\Category;
  */
 class CategoryRepository extends ServiceEntityRepository
 {
-    use CommonRepositoryAware;
 
     public function __construct(ManagerRegistry $registry)
     {
