@@ -4,7 +4,7 @@ namespace WechatStoreBundle\Tests\Entity;
 
 use WechatStoreBundle\Entity\QualificationImage;
 
-class QualificationImageTest extends AbstractEntityTest
+class QualificationImageTest extends AbstractEntityTestCase
 {
     protected function getEntityClass(): string
     {

@@ -4,7 +4,7 @@ namespace WechatStoreBundle\Tests\Entity;
 
 use WechatStoreBundle\Entity\ServerMessage;
 
-class ServerMessageTest extends AbstractEntityTest
+class ServerMessageTest extends AbstractEntityTestCase
 {
     protected function getEntityClass(): string
     {

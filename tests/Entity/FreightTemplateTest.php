@@ -4,7 +4,7 @@ namespace WechatStoreBundle\Tests\Entity;
 
 use WechatStoreBundle\Entity\FreightTemplate;
 
-class FreightTemplateTest extends AbstractEntityTest
+class FreightTemplateTest extends AbstractEntityTestCase
 {
     protected function getEntityClass(): string
     {

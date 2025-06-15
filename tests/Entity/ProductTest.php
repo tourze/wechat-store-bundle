@@ -4,7 +4,7 @@ namespace WechatStoreBundle\Tests\Entity;
 
 use WechatStoreBundle\Entity\Product;
 
-class ProductTest extends AbstractEntityTest
+class ProductTest extends AbstractEntityTestCase
 {
     protected function getEntityClass(): string
     {

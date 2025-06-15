@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * 所有实体测试类的基类，提供通用的测试方法
  */
-abstract class AbstractEntityTest extends TestCase
+abstract class AbstractEntityTestCase extends TestCase
 {
     /**
      * 获取要测试的实体类名
