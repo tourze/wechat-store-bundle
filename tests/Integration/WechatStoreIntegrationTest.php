@@ -14,15 +14,11 @@ class WechatStoreIntegrationTest extends TestCase
      */
     public function testBundleRegistration(): void
     {
-        $this->markTestSkipped('需要完整的 Symfony 环境来测试 Bundle 注册');
+        $bundle = new \WechatStoreBundle\WechatStoreBundle();
         
-        // 实际测试代码保留在此处作为参考
-        /*
-        $kernel = self::bootKernel();
-        $container = $kernel->getContainer();
-        
-        $this->assertTrue($kernel->isBooted());
-        */
+        $this->assertInstanceOf(\Symfony\Component\HttpKernel\Bundle\Bundle::class, $bundle);
+        $this->assertInstanceOf(\Tourze\BundleDependency\BundleDependencyInterface::class, $bundle);
+        $this->assertEquals('WechatStoreBundle', $bundle->getName());
     }
     
     /**
@@ -30,27 +26,18 @@ class WechatStoreIntegrationTest extends TestCase
      */
     public function testRepositoryServicesAreRegistered(): void
     {
-        $this->markTestSkipped('由于依赖 Doctrine 配置，此测试在完整的应用程序环境中进行');
-        
-        // 实际测试代码保留在此处作为参考
-        /*
-        $kernel = self::bootKernel();
-        $container = static::getContainer();
-        
-        // 测试所有实体仓库是否被正确注册为服务
         $repositoryClasses = [
-            CategoryRepository::class,
-            FreightTemplateRepository::class,
-            ProductRepository::class,
-            QualificationImageRepository::class,
-            ServerMessageRepository::class,
+            'WechatStoreBundle\Repository\CategoryRepository',
+            'WechatStoreBundle\Repository\FreightTemplateRepository',
+            'WechatStoreBundle\Repository\ProductRepository',
+            'WechatStoreBundle\Repository\QualificationImageRepository',
+            'WechatStoreBundle\Repository\ServerMessageRepository',
         ];
         
         foreach ($repositoryClasses as $repositoryClass) {
-            $this->assertTrue($container->has($repositoryClass), sprintf('Repository service %s is not registered', $repositoryClass));
-            $this->assertInstanceOf($repositoryClass, $container->get($repositoryClass));
+            $this->assertTrue(class_exists($repositoryClass), sprintf('Repository class %s does not exist', $repositoryClass));
+            $this->assertTrue(is_subclass_of($repositoryClass, 'Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository'), sprintf('Repository %s is not a ServiceEntityRepository', $repositoryClass));
         }
-        */
     }
     
     /**
@@ -58,16 +45,13 @@ class WechatStoreIntegrationTest extends TestCase
      */
     public function testServicesAreRegistered(): void
     {
-        $this->markTestSkipped('由于依赖完整的容器配置，此测试在完整的应用程序环境中进行');
+        $serviceClasses = [
+            'WechatStoreBundle\Service\ProductService',
+        ];
         
-        // 实际测试代码保留在此处作为参考
-        /*
-        $kernel = self::bootKernel();
-        $container = static::getContainer();
-        
-        $this->assertTrue($container->has(ProductService::class));
-        $this->assertInstanceOf(ProductService::class, $container->get(ProductService::class));
-        */
+        foreach ($serviceClasses as $serviceClass) {
+            $this->assertTrue(class_exists($serviceClass), sprintf('Service class %s does not exist', $serviceClass));
+        }
     }
     
     /**
@@ -75,22 +59,18 @@ class WechatStoreIntegrationTest extends TestCase
      */
     public function testCommandsAreRegistered(): void
     {
-        $this->markTestSkipped('由于命令注册需要额外配置，此测试在完整的应用程序环境中进行');
+        $commandClasses = [
+            'WechatStoreBundle\Command\SyncCategoryCommand',
+        ];
         
-        // 实际测试代码保留在此处作为参考
-        /*
-        $kernel = self::bootKernel();
-        $container = static::getContainer();
-        
-        // 在实际应用程序中，命令会注册到控制台应用程序中
-        // 这里我们创建一个新的应用程序并检查我们的命令是否可以添加
-        $application = new Application();
-        $command = new SyncCategoryCommand();
-        $application->add($command);
-        
-        $this->assertTrue($application->has('wechat-store:sync-category'));
-        $this->assertSame($command, $application->find('wechat-store:sync-category'));
-        */
+        foreach ($commandClasses as $commandClass) {
+            $this->assertTrue(class_exists($commandClass), sprintf('Command class %s does not exist', $commandClass));
+            $this->assertTrue(is_subclass_of($commandClass, 'Symfony\Component\Console\Command\Command'), sprintf('Command %s is not a Console Command', $commandClass));
+            
+            // 测试命令可以实例化
+            $command = new $commandClass();
+            $this->assertInstanceOf($commandClass, $command);
+        }
     }
     
     /**
@@ -98,20 +78,22 @@ class WechatStoreIntegrationTest extends TestCase
      */
     public function testRoutesAreRegistered(): void
     {
-        $this->markTestSkipped('由于路由注册需要额外配置，此测试在完整的应用程序环境中进行');
+        $controllerClass = 'WechatStoreBundle\Controller\ServerController';
         
-        // 实际测试代码保留在此处作为参考
-        /*
-        $kernel = self::bootKernel();
-        $container = static::getContainer();
+        $this->assertTrue(class_exists($controllerClass), sprintf('Controller class %s does not exist', $controllerClass));
         
-        // 在实际应用程序中，我们可以测试路由是否已注册
-        /* @var RouterInterface $router *\/
-        $router = $container->get('router');
-        $routes = $router->getRouteCollection();
+        // 检查控制器方法上的路由属性
+        $reflection = new \ReflectionClass($controllerClass);
+        $method = $reflection->getMethod('index');
+        $attributes = $method->getAttributes(\Symfony\Component\Routing\Attribute\Route::class);
         
-        $this->assertNotNull($routes->get('wechat-store-callback'));
-        */
+        $this->assertCount(1, $attributes, 'Index method should have Route attribute');
+        
+        $routeAttribute = $attributes[0];
+        $arguments = $routeAttribute->getArguments();
+        
+        $this->assertEquals('/wechat-store/callback/{appId}', $arguments[0] ?? $arguments['path'] ?? null, 'Route path should match');
+        $this->assertEquals('wechat-store-callback', $arguments['name'] ?? null, 'Route name should match');
     }
     
     /**
@@ -119,17 +101,16 @@ class WechatStoreIntegrationTest extends TestCase
      */
     public function testControllerAvailability(): void
     {
-        $this->markTestSkipped('需要完整的 Symfony 环境来测试控制器注入');
+        $controllerClass = 'WechatStoreBundle\Controller\ServerController';
         
-        // 实际测试代码保留在此处作为参考
-        /*
-        $kernel = self::bootKernel();
-        $container = static::getContainer();
+        $this->assertTrue(class_exists($controllerClass), sprintf('Controller class %s does not exist', $controllerClass));
+        $this->assertTrue(is_subclass_of($controllerClass, 'Symfony\Bundle\FrameworkBundle\Controller\AbstractController'), sprintf('Controller %s is not an AbstractController', $controllerClass));
         
-        // 在实际测试中，我们可以在此处获取控制器并测试其功能
-        $controllerClass = ServerController::class;
-        $this->assertTrue($container->has($controllerClass));
-        $this->assertInstanceOf($controllerClass, $container->get($controllerClass));
-        */
+        // 检查控制器的方法是否存在
+        $reflection = new \ReflectionClass($controllerClass);
+        $this->assertTrue($reflection->hasMethod('index'), 'Controller should have index method');
+        
+        $indexMethod = $reflection->getMethod('index');
+        $this->assertTrue($indexMethod->isPublic(), 'Index method should be public');
     }
 } 
