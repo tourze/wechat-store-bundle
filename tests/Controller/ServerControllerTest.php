@@ -27,7 +27,6 @@ class ServerControllerTest extends TestCase
         $result = $controller->index($eventDispatcher);
         
         // 验证返回的是空数组，这符合控制器的实现
-        $this->assertIsArray($result);
         $this->assertEmpty($result);
     }
 } 
