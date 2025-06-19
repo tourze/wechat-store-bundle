@@ -9,10 +9,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Tourze\Symfony\CronJob\Attribute\AsCronTask;
 
 #[AsCronTask('2 1 * * *')]
-#[AsCommand(name: 'wechat-store:sync-category', description: '同步类目到本地')]
+#[AsCommand(name: self::NAME, description: '同步类目到本地')]
 class SyncCategoryCommand extends Command
 {
-    public const NAME = 'sync-category';
+    public const NAME = 'wechat-store:sync-category';
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

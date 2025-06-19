@@ -18,8 +18,8 @@ class ServerMessageTest extends AbstractEntityTestCase
     public function testImmutability_propertyRetentionAfterChange(): void
     {
         $message = $this->createEntity();
-        $date1 = new \DateTime('2023-01-01 12:00:00');
-        $date2 = new \DateTime('2023-01-02 12:00:00');
+        $date1 = new \DateTimeImmutable('2023-01-01 12:00:00');
+        $date2 = new \DateTimeImmutable('2023-01-02 12:00:00');
         
         $message->setCreateTime($date1);
         $this->assertSame($date1, $message->getCreateTime());

@@ -33,7 +33,7 @@ abstract class AbstractEntityTestCase extends TestCase
     public function testCreateTime_getterAndSetter(): void
     {
         $entity = $this->createEntity();
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         
         $entity->setCreateTime($date);
         $this->assertSame($date, $entity->getCreateTime());
@@ -45,7 +45,7 @@ abstract class AbstractEntityTestCase extends TestCase
     public function testUpdateTime_getterAndSetter(): void
     {
         $entity = $this->createEntity();
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         
         $entity->setUpdateTime($date);
         $this->assertSame($date, $entity->getUpdateTime());
