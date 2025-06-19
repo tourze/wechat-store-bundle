@@ -10,7 +10,7 @@ use WechatStoreBundle\Repository\QualificationImageRepository;
 
 #[ORM\Entity(repositoryClass: QualificationImageRepository::class)]
 #[ORM\Table(name: 'wechat_store_qualification_image', options: ['comment' => '微信店铺资质形象'])]
-class QualificationImage
+class QualificationImage implements \Stringable
 {
     use TimestampableAware;
 
@@ -23,5 +23,10 @@ class QualificationImage
     public function getId(): ?string
     {
         return $this->id;
+    }
+
+    public function __toString(): string
+    {
+        return (string) $this->getId();
     }
 }

@@ -10,7 +10,7 @@ use WechatStoreBundle\Repository\FreightTemplateRepository;
 
 #[ORM\Entity(repositoryClass: FreightTemplateRepository::class)]
 #[ORM\Table(name: 'wechat_store_freight_template', options: ['comment' => '微信店铺运费模板'])]
-class FreightTemplate
+class FreightTemplate implements \Stringable
 {
     use TimestampableAware;
 
@@ -23,5 +23,10 @@ class FreightTemplate
     public function getId(): ?string
     {
         return $this->id;
+    }
+
+    public function __toString(): string
+    {
+        return (string) $this->getId();
     }
 }

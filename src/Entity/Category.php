@@ -10,7 +10,7 @@ use WechatStoreBundle\Repository\CategoryRepository;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ORM\Table(name: 'wechat_store_category', options: ['comment' => '微信商店类别'])]
-class Category
+class Category implements \Stringable
 {
     use TimestampableAware;
 
@@ -23,5 +23,10 @@ class Category
     public function getId(): ?string
     {
         return $this->id;
+    }
+
+    public function __toString(): string
+    {
+        return (string) $this->getId();
     }
 }

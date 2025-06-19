@@ -12,6 +12,8 @@ use Tourze\Symfony\CronJob\Attribute\AsCronTask;
 #[AsCommand(name: 'wechat-store:sync-category', description: '同步类目到本地')]
 class SyncCategoryCommand extends Command
 {
+    public const NAME = 'sync-category';
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('TEST');
