@@ -11,14 +11,14 @@ abstract class AbstractEntityTestCase extends TestCase
 {
     /**
      * 获取要测试的实体类名
-     * 
+     *
      * @return string
      */
     abstract protected function getEntityClass(): string;
     
     /**
      * 创建实体实例
-     * 
+     *
      * @return object
      */
     protected function createEntity(): object

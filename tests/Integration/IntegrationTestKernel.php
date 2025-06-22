@@ -23,7 +23,7 @@ class IntegrationTestKernel extends Kernel
         $this->configs = $configs;
     }
 
-    public function registerBundles(): array
+    public function registerBundles(): iterable
     {
         return [
             new FrameworkBundle(),
