@@ -2,9 +2,8 @@
 
 namespace WechatStoreBundle\Entity;
 
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Tourze\DoctrineSnowflakeBundle\Service\SnowflakeIdGenerator;
+use Tourze\DoctrineSnowflakeBundle\Traits\SnowflakeKeyAware;
 use Tourze\DoctrineTimestampBundle\Traits\TimestampableAware;
 use WechatStoreBundle\Repository\ProductRepository;
 
@@ -13,17 +12,7 @@ use WechatStoreBundle\Repository\ProductRepository;
 class Product implements \Stringable
 {
     use TimestampableAware;
-
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(SnowflakeIdGenerator::class)]
-    #[ORM\Column(type: Types::BIGINT, nullable: false, options: ['comment' => 'ID'])]
-    private ?string $id = null;
-
-    public function getId(): ?string
-    {
-        return $this->id;
-    }
+    use SnowflakeKeyAware;
 
     public function __toString(): string
     {

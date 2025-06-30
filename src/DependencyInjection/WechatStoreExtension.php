@@ -11,6 +11,8 @@ class WechatStoreExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
+        $container->setParameter('wechat_store.bundle_dir', dirname(__DIR__, 2));
+        
         $loader = new YamlFileLoader(
             $container,
             new FileLocator(__DIR__ . '/../Resources/config')

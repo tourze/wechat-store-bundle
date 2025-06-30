@@ -54,7 +54,7 @@ class SyncCategoryCommandTest extends TestCase
             if (str_contains($attributeName, 'AsCronTask')) {
                 $hasCronTask = true;
                 $args = $attribute->getArguments();
-                $this->assertEquals('2 1 * * *', $args[0] ?? null);
+                $this->assertEquals('2 1 * * *', $args['expression'] ?? null);
             }
         }
         

@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class ServerController extends AbstractController
 {
-    #[Route('/wechat-store/callback/{appId}', name: 'wechat-store-callback')]
+    #[Route(path: '/wechat-store/callback/{appId}', name: 'wechat-store-callback')]
     public function __invoke(EventDispatcherInterface $eventDispatcher): Response
     {
         // TODO 将消息存库

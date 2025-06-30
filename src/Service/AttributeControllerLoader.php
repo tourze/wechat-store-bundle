@@ -7,6 +7,7 @@ namespace WechatStoreBundle\Service;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Loader\AttributeClassLoader;
 use Symfony\Component\Routing\RouteCollection;
+use WechatStoreBundle\Exception\InvalidClassException;
 
 final class AttributeControllerLoader extends AttributeClassLoader
 {
@@ -24,7 +25,7 @@ final class AttributeControllerLoader extends AttributeClassLoader
     public function load(mixed $class, ?string $type = null): RouteCollection
     {
         if (!is_string($class) || !class_exists($class)) {
-            throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', (string) $class));
+            throw InvalidClassException::classNotFound((string) $class);
         }
 
         $collection = new RouteCollection();
