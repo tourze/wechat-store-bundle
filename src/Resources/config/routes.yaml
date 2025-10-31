@@ -1,3 +1,0 @@
-wechat_store_controllers:
-  resource: '../../Controller/'
-  type: attribute

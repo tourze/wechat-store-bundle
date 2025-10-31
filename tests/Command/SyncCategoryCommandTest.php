@@ -2,46 +2,60 @@
 
 namespace WechatStoreBundle\Tests\Command;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractCommandTestCase;
 use WechatStoreBundle\Command\SyncCategoryCommand;
 
-class SyncCategoryCommandTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(SyncCategoryCommand::class)]
+#[Group('unit')]
+#[RunTestsInSeparateProcesses]
+final class SyncCategoryCommandTest extends AbstractCommandTestCase
 {
-    private CommandTester $commandTester;
-    private SyncCategoryCommand $command;
-    
-    protected function setUp(): void
+    protected function onSetUp(): void
     {
-        $this->command = new SyncCategoryCommand();
-        
-        $application = new Application();
-        $application->add($this->command);
-        
-        $this->commandTester = new CommandTester($this->command);
     }
-    
-    public function testExecute_commandReturnsSuccess(): void
+
+    protected function getCommandTester(): CommandTester
     {
-        $this->commandTester->execute([]);
-        
-        $output = $this->commandTester->getDisplay();
-        $statusCode = $this->commandTester->getStatusCode();
-        
+        /** @var SyncCategoryCommand $command */
+        $command = self::getContainer()->get(SyncCategoryCommand::class);
+
+        return new CommandTester($command);
+    }
+
+    private function createCommandTester(): CommandTester
+    {
+        return $this->getCommandTester();
+    }
+
+    public function testExecuteCommandReturnsSuccess(): void
+    {
+        $commandTester = $this->createCommandTester();
+        $commandTester->execute([]);
+
+        $output = $commandTester->getDisplay();
+        $statusCode = $commandTester->getStatusCode();
+
         $this->assertStringContainsString('TEST', $output);
         $this->assertEquals(Command::SUCCESS, $statusCode);
     }
-    
-    public function testCommandAttributes_areSetCorrectly(): void
+
+    public function testCommandAttributesAreSetCorrectly(): void
     {
         $commandReflection = new \ReflectionClass(SyncCategoryCommand::class);
         $attributes = $commandReflection->getAttributes();
-        
+
         $hasAsCommand = false;
         $hasCronTask = false;
-        
+
         foreach ($attributes as $attribute) {
             $attributeName = $attribute->getName();
             if (str_contains($attributeName, 'AsCommand')) {
@@ -50,55 +64,61 @@ class SyncCategoryCommandTest extends TestCase
                 $this->assertEquals('wechat-store:sync-category', $args['name'] ?? null);
                 $this->assertEquals('同步类目到本地', $args['description'] ?? null);
             }
-            
+
             if (str_contains($attributeName, 'AsCronTask')) {
                 $hasCronTask = true;
                 $args = $attribute->getArguments();
                 $this->assertEquals('2 1 * * *', $args['expression'] ?? null);
             }
         }
-        
+
         $this->assertTrue($hasAsCommand, 'Command 类缺少 AsCommand 属性');
         $this->assertTrue($hasCronTask, 'Command 类缺少 AsCronTask 属性');
     }
-    
-    public function testExecute_withVerboseOption_outputsMoreInformation(): void
+
+    public function testExecuteWithVerboseOptionOutputsMoreInformation(): void
     {
-        $this->commandTester->execute([], ['verbosity' => 256]); // Output::VERBOSITY_VERBOSE
-        
-        $output = $this->commandTester->getDisplay();
-        
+        $commandTester = $this->createCommandTester();
+        $commandTester->execute([], ['verbosity' => 256]); // Output::VERBOSITY_VERBOSE
+
+        $output = $commandTester->getDisplay();
+
         // 即使在详细模式下，当前实现也只输出 TEST
         $this->assertStringContainsString('TEST', $output);
     }
-    
-    public function testExecute_withQuietOption_outputsLessInformation(): void
+
+    public function testExecuteWithQuietOptionOutputsLessInformation(): void
     {
-        $this->commandTester->execute([], ['verbosity' => 16]); // Output::VERBOSITY_QUIET
-        
-        $output = $this->commandTester->getDisplay();
-        
+        $commandTester = $this->createCommandTester();
+        $commandTester->execute([], ['verbosity' => 16]); // Output::VERBOSITY_QUIET
+
+        $output = $commandTester->getDisplay();
+
         // 在安静模式下，输出应该被抑制
         // 但由于命令直接使用 writeln，我们测试实际行为
         $this->assertEmpty($output);
-        $this->assertEquals(Command::SUCCESS, $this->commandTester->getStatusCode());
+        $this->assertEquals(Command::SUCCESS, $commandTester->getStatusCode());
     }
-    
+
     /**
      * 测试命令的帮助信息是否正确
      */
-    public function testCommandHelp_isCorrect(): void
+    public function testCommandHelpIsCorrect(): void
     {
+        /** @var SyncCategoryCommand $command */
+        $command = self::getContainer()->get(SyncCategoryCommand::class);
         $application = new Application();
-        $application->add($this->command);
-        $command = $application->find('wechat-store:sync-category');
-        
+        $application->add($command);
+        $foundCommand = $application->find('wechat-store:sync-category');
+
         // 直接检查命令属性而不是运行帮助
-        $this->assertEquals('wechat-store:sync-category', $command->getName());
-        $this->assertEquals('同步类目到本地', $command->getDescription());
-        
-        // 测试帮助可以通过检查命令定义来验证，而不是实际运行
-        // 因为当前的命令实现会直接执行而不响应 --help 标志
-        $this->assertTrue(true, 'Command name and description are correctly set');
+        $this->assertEquals('wechat-store:sync-category', $foundCommand->getName());
+        $this->assertEquals('同步类目到本地', $foundCommand->getDescription());
+
+        // 验证命令配置正确性
+        $this->assertIsString($foundCommand->getName());
+        $this->assertIsString($foundCommand->getDescription());
+        $this->assertNotEmpty($foundCommand->getName());
+        $this->assertNotEmpty($foundCommand->getDescription());
     }
-} 
+}

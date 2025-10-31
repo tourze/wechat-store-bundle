@@ -4,27 +4,14 @@ declare(strict_types=1);
 
 namespace WechatStoreBundle\Tests\DependencyInjection;
 
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use PHPUnit\Framework\Attributes\CoversClass;
+use Tourze\PHPUnitSymfonyUnitTest\AbstractDependencyInjectionExtensionTestCase;
 use WechatStoreBundle\DependencyInjection\WechatStoreExtension;
 
-final class WechatStoreExtensionTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(WechatStoreExtension::class)]
+final class WechatStoreExtensionTest extends AbstractDependencyInjectionExtensionTestCase
 {
-    private WechatStoreExtension $extension;
-    private ContainerBuilder $container;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->extension = new WechatStoreExtension();
-        $this->container = new ContainerBuilder();
-    }
-
-    public function testLoad(): void
-    {
-        $this->extension->load([], $this->container);
-        
-        self::assertTrue($this->container->hasParameter('wechat_store.bundle_dir'));
-        self::assertSame(dirname(__DIR__, 2), $this->container->getParameter('wechat_store.bundle_dir'));
-    }
 }

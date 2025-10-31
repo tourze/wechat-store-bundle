@@ -2,9 +2,12 @@
 
 namespace WechatStoreBundle\Service;
 
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+
+#[Autoconfigure(public: true)]
 class ProductService
 {
-    public function add()
+    public function add(): void
     {
     }
 }

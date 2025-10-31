@@ -1,24 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WechatStoreBundle\Tests;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractBundleTestCase;
 use WechatStoreBundle\WechatStoreBundle;
 
-class WechatStoreBundleTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(WechatStoreBundle::class)]
+#[RunTestsInSeparateProcesses]
+final class WechatStoreBundleTest extends AbstractBundleTestCase
 {
-    public function testGetBundleDependencies_returnsEmptyArray(): void
-    {
-        $dependencies = WechatStoreBundle::getBundleDependencies();
-        
-        // 验证返回值的特定属性
-        $this->assertCount(0, $dependencies, 'Bundle dependencies should be empty');
-    }
-    
-    public function testBundleInstance_canBeCreated(): void
-    {
-        $bundle = new WechatStoreBundle();
-        
-        $this->assertInstanceOf(WechatStoreBundle::class, $bundle);
-    }
-} 
+}

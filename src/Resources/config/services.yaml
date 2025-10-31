@@ -18,3 +18,12 @@ services:
     resource: '../../Service/'
   WechatStoreBundle\Procedure\:
     resource: '../../Procedure/'
+
+  # 显式注册AdminMenu服务
+  wechat_store.admin_menu:
+    class: WechatStoreBundle\Service\AdminMenu
+    public: true
+    arguments:
+      - '@Tourze\EasyAdminMenuBundle\Service\LinkGeneratorInterface'
+    tags:
+      - { name: easy_admin_menu.provider }

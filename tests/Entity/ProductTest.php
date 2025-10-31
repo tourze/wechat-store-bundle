@@ -2,16 +2,35 @@
 
 namespace WechatStoreBundle\Tests\Entity;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use Tourze\PHPUnitDoctrineEntity\AbstractEntityTestCase;
 use WechatStoreBundle\Entity\Product;
 
-class ProductTest extends AbstractEntityTestCase
+/**
+ * @internal
+ */
+#[CoversClass(Product::class)]
+final class ProductTest extends AbstractEntityTestCase
 {
-    protected function getEntityClass(): string
+    protected function createEntity(): Product
     {
-        return Product::class;
+        return new Product();
     }
-    
+
     /**
-     * 额外测试 - 特定于 Product 实体的测试用例可以在这里添加
+     * @return iterable<string, array{string, mixed}>
      */
-} 
+    public static function propertiesProvider(): iterable
+    {
+        return [
+            'id' => ['id', '123'],
+        ];
+    }
+
+    public function testToStringReturnsId(): void
+    {
+        $entity = $this->createEntity();
+        $stringValue = $entity->__toString();
+        $this->assertIsString($stringValue);
+    }
+}

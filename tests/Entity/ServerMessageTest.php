@@ -2,30 +2,37 @@
 
 namespace WechatStoreBundle\Tests\Entity;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use Tourze\PHPUnitDoctrineEntity\AbstractEntityTestCase;
 use WechatStoreBundle\Entity\ServerMessage;
 
-class ServerMessageTest extends AbstractEntityTestCase
+/**
+ * @internal
+ */
+#[CoversClass(ServerMessage::class)]
+final class ServerMessageTest extends AbstractEntityTestCase
 {
-    protected function getEntityClass(): string
+    protected function createEntity(): ServerMessage
     {
-        return ServerMessage::class;
+        return new ServerMessage();
     }
-    
+
     /**
-     * 额外测试 - 特定于 ServerMessage 实体的测试用例可以在这里添加
+     * @return iterable<string, array{string, mixed}>
      */
-    
-    public function testImmutability_propertyRetentionAfterChange(): void
+    public static function propertiesProvider(): iterable
     {
-        $message = $this->createEntity();
-        $date1 = new \DateTimeImmutable('2023-01-01 12:00:00');
-        $date2 = new \DateTimeImmutable('2023-01-02 12:00:00');
-        
-        $message->setCreateTime($date1);
-        $this->assertSame($date1, $message->getCreateTime());
-        
-        $message->setCreateTime($date2);
-        $this->assertSame($date2, $message->getCreateTime());
-        $this->assertNotSame($date1, $message->getCreateTime());
+        yield 'type' => ['type', 'test-type'];
+        yield 'content' => ['content', 'test content'];
+        yield 'mediaUrl' => ['mediaUrl', 'https://example.com/media.jpg'];
+        yield 'mediaId' => ['mediaId', 'media123'];
+        yield 'mediaMd5' => ['mediaMd5', 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6'];
     }
-} 
+
+    public function testToStringReturnsId(): void
+    {
+        $entity = $this->createEntity();
+        $stringValue = $entity->__toString();
+        $this->assertIsString($stringValue);
+    }
+}

@@ -1,60 +1,52 @@
 <?php
 
-declare(strict_types=1);
-
 namespace WechatStoreBundle\Service;
 
-use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\Loader\AttributeClassLoader;
+use Symfony\Bundle\FrameworkBundle\Routing\AttributeRouteControllerLoader;
+use Symfony\Component\Config\Loader\Loader;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Symfony\Component\Routing\RouteCollection;
-use WechatStoreBundle\Exception\InvalidClassException;
+use Tourze\RoutingAutoLoaderBundle\Service\RoutingAutoLoaderInterface;
+use WechatStoreBundle\Controller\CategoryCrudController;
+use WechatStoreBundle\Controller\FreightTemplateCrudController;
+use WechatStoreBundle\Controller\ProductCrudController;
+use WechatStoreBundle\Controller\QualificationImageCrudController;
+use WechatStoreBundle\Controller\ServerController;
+use WechatStoreBundle\Controller\ServerMessageCrudController;
 
-final class AttributeControllerLoader extends AttributeClassLoader
+#[AutoconfigureTag(name: 'routing.loader')]
+#[Autoconfigure(public: true)]
+class AttributeControllerLoader extends Loader implements RoutingAutoLoaderInterface
 {
+    private AttributeRouteControllerLoader $controllerLoader;
+
     public function __construct()
     {
+        parent::__construct();
+        $this->controllerLoader = new AttributeRouteControllerLoader();
     }
 
-    public static function autoload(RouteCollection $collection): void
+    public function load(mixed $resource, ?string $type = null): RouteCollection
     {
-        // 这里需要加载控制器
-        $controllerLoader = new self();
-        $collection->addCollection($controllerLoader->load(\WechatStoreBundle\Controller\ServerController::class));
+        return $this->autoload();
     }
-    
-    public function load(mixed $class, ?string $type = null): RouteCollection
-    {
-        if (!is_string($class) || !class_exists($class)) {
-            throw InvalidClassException::classNotFound((string) $class);
-        }
 
+    public function supports(mixed $resource, ?string $type = null): bool
+    {
+        return false;
+    }
+
+    public function autoload(): RouteCollection
+    {
         $collection = new RouteCollection();
-
-        $reflection = new \ReflectionClass($class);
-
-        // 处理方法级别的路由
-        foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-            $methodAttributes = $method->getAttributes(Route::class);
-            foreach ($methodAttributes as $attribute) {
-                $route = $attribute->newInstance();
-                $routeName = $route->getName() ?? $class . '::' . $method->getName();
-                $routeObject = $this->createRoute($route->getPath(), [
-                    '_controller' => $class . '::' . $method->getName()
-                ], [], [], null, [], [], null);
-                $collection->add($routeName, $routeObject);
-            }
-        }
+        $collection->addCollection($this->controllerLoader->load(ServerController::class));
+        $collection->addCollection($this->controllerLoader->load(CategoryCrudController::class));
+        $collection->addCollection($this->controllerLoader->load(FreightTemplateCrudController::class));
+        $collection->addCollection($this->controllerLoader->load(ProductCrudController::class));
+        $collection->addCollection($this->controllerLoader->load(QualificationImageCrudController::class));
+        $collection->addCollection($this->controllerLoader->load(ServerMessageCrudController::class));
 
         return $collection;
-    }
-
-    protected function createRoute(string $path, array $defaults, array $requirements = [], array $options = [], ?string $host = null, array $schemes = [], array $methods = [], ?string $condition = null): \Symfony\Component\Routing\Route
-    {
-        return new \Symfony\Component\Routing\Route($path, $defaults, $requirements, $options, $host, $schemes, $methods, $condition);
-    }
-
-    protected function configureRoute(\Symfony\Component\Routing\Route $route, \ReflectionClass $class, \ReflectionMethod $method, object $annot): void
-    {
-        // 实现父类的抽象方法
     }
 }

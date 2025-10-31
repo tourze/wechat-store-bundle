@@ -2,19 +2,37 @@
 
 namespace WechatStoreBundle\Tests\Service;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractIntegrationTestCase;
 use WechatStoreBundle\Service\ProductService;
 
-class ProductServiceTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(ProductService::class)]
+#[RunTestsInSeparateProcesses]
+final class ProductServiceTest extends AbstractIntegrationTestCase
 {
-    public function testAdd_methodWorksCorrectly(): void
+    protected function onSetUp(): void
     {
-        $productService = new ProductService();
-        
-        // 由于 add 方法目前是空实现，我们只能测试它不抛出异常
-        $result = $productService->add();
-        
-        // 验证方法执行完成（即使返回void）
-        $this->assertNull($result);
+        // 无需特殊设置
     }
-} 
+
+    public function testAddMethodWorksCorrectly(): void
+    {
+        $productService = self::getService(ProductService::class);
+
+        // 由于 add 方法目前是空实现，我们只能测试它不抛出异常
+        $productService->add();
+
+        // 验证方法执行完成（即使返回void）
+        $this->expectNotToPerformAssertions();
+    }
+
+    public function testInstanceCanBeCreated(): void
+    {
+        $productService = self::getService(ProductService::class);
+        $this->assertInstanceOf(ProductService::class, $productService);
+    }
+}

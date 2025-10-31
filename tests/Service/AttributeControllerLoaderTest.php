@@ -1,53 +1,55 @@
 <?php
 
-declare(strict_types=1);
-
 namespace WechatStoreBundle\Tests\Service;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Component\Routing\RouteCollection;
-use WechatStoreBundle\Controller\ServerController;
-use WechatStoreBundle\Exception\InvalidClassException;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractIntegrationTestCase;
 use WechatStoreBundle\Service\AttributeControllerLoader;
 
-final class AttributeControllerLoaderTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(AttributeControllerLoader::class)]
+#[RunTestsInSeparateProcesses]
+final class AttributeControllerLoaderTest extends AbstractIntegrationTestCase
 {
-    private AttributeControllerLoader $loader;
-
-    protected function setUp(): void
+    protected function onSetUp(): void
     {
-        parent::setUp();
-        $this->loader = new AttributeControllerLoader();
+        // 无需特殊设置
     }
 
-    public function testLoadWithValidClass(): void
+    public function testSupportsAlwaysReturnsFalse(): void
     {
-        $collection = $this->loader->load(ServerController::class);
-        
+        $loader = self::getService(AttributeControllerLoader::class);
+
+        self::assertFalse($loader->supports('any-resource'));
+        self::assertFalse($loader->supports('any-resource', 'any-type'));
+    }
+
+    public function testInstanceHasCorrectType(): void
+    {
+        $loader = self::getService(AttributeControllerLoader::class);
+        self::assertIsObject($loader);
+        self::assertStringContainsString('AttributeControllerLoader', get_class($loader));
+    }
+
+    public function testAutoloadReturnsRouteCollection(): void
+    {
+        $loader = self::getService(AttributeControllerLoader::class);
+        $collection = $loader->autoload();
+
         self::assertInstanceOf(RouteCollection::class, $collection);
+        self::assertGreaterThan(0, $collection->count());
     }
 
-    public function testLoadWithInvalidClass(): void
+    public function testLoadCallsAutoload(): void
     {
-        $this->expectException(InvalidClassException::class);
-        $this->expectExceptionMessage('Class "NonExistentClass" does not exist.');
-        
-        $this->loader->load('NonExistentClass');
-    }
+        $loader = self::getService(AttributeControllerLoader::class);
+        $collection = $loader->load('any-resource');
 
-    public function testLoadWithNonStringClass(): void
-    {
-        $this->expectException(InvalidClassException::class);
-        
-        $this->loader->load(123);
-    }
-
-    public function testAutoload(): void
-    {
-        $collection = new RouteCollection();
-        
-        AttributeControllerLoader::autoload($collection);
-        
-        self::assertGreaterThanOrEqual(0, $collection->count());
+        self::assertInstanceOf(RouteCollection::class, $collection);
+        self::assertGreaterThan(0, $collection->count());
     }
 }
