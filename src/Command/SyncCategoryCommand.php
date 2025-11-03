@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WechatStoreBundle\Command;
 
 use Symfony\Component\Console\Attribute\AsCommand;

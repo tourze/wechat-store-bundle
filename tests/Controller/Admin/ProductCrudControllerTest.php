@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace WechatStoreBundle\Tests\Controller;
+namespace WechatStoreBundle\Tests\Controller\Admin;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Tourze\PHPUnitSymfonyWebTest\AbstractEasyAdminControllerTestCase;
-use WechatStoreBundle\Controller\ProductCrudController;
+use WechatStoreBundle\Controller\Admin\ProductCrudController;
 use WechatStoreBundle\Entity\Product;
 
 /**

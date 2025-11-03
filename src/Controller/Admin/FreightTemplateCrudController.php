@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace WechatStoreBundle\Controller;
+namespace WechatStoreBundle\Controller\Admin;
 
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminCrud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;

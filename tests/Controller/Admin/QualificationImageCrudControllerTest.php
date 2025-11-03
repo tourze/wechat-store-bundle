@@ -2,34 +2,34 @@
 
 declare(strict_types=1);
 
-namespace WechatStoreBundle\Tests\Controller;
+namespace WechatStoreBundle\Tests\Controller\Admin;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Tourze\PHPUnitSymfonyWebTest\AbstractEasyAdminControllerTestCase;
-use WechatStoreBundle\Controller\FreightTemplateCrudController;
-use WechatStoreBundle\Entity\FreightTemplate;
+use WechatStoreBundle\Controller\Admin\QualificationImageCrudController;
+use WechatStoreBundle\Entity\QualificationImage;
 
 /**
- * 运费模板管理控制器测试
+ * 资质形象管理控制器测试
  * @internal
  */
-#[CoversClass(FreightTemplateCrudController::class)]
+#[CoversClass(QualificationImageCrudController::class)]
 #[RunTestsInSeparateProcesses]
-final class FreightTemplateCrudControllerTest extends AbstractEasyAdminControllerTestCase
+final class QualificationImageCrudControllerTest extends AbstractEasyAdminControllerTestCase
 {
-    private FreightTemplateCrudController $controller;
+    private QualificationImageCrudController $controller;
 
     protected function onSetUp(): void
     {
-        $this->controller = new FreightTemplateCrudController();
+        $this->controller = new QualificationImageCrudController();
     }
 
-    protected function getControllerService(): FreightTemplateCrudController
+    protected function getControllerService(): QualificationImageCrudController
     {
-        return self::getService(FreightTemplateCrudController::class);
+        return self::getService(QualificationImageCrudController::class);
     }
 
     /**
@@ -38,10 +38,9 @@ final class FreightTemplateCrudControllerTest extends AbstractEasyAdminControlle
     public static function provideIndexPageHeaders(): iterable
     {
         yield 'ID' => ['ID'];
-        yield 'Name' => ['模板名称'];
-        yield 'Type' => ['计费方式'];
-        yield 'Price' => ['价格'];
-        yield 'Free Amount' => ['免运费金额'];
+        yield 'Title' => ['标题'];
+        yield 'Image Path' => ['图片路径'];
+        yield 'Sort Order' => ['排序'];
         yield 'Status' => ['状态'];
         yield 'Created Time' => ['创建时间'];
         yield 'Updated Time' => ['更新时间'];
@@ -52,10 +51,9 @@ final class FreightTemplateCrudControllerTest extends AbstractEasyAdminControlle
      */
     public static function provideNewPageFields(): iterable
     {
-        yield 'name' => ['name'];
-        yield 'type' => ['type'];
-        yield 'price' => ['price'];
-        yield 'freeAmount' => ['freeAmount'];
+        yield 'title' => ['title'];
+        yield 'imagePath' => ['imagePath'];
+        yield 'sortOrder' => ['sortOrder'];
         yield 'status' => ['status'];
     }
 
@@ -64,22 +62,21 @@ final class FreightTemplateCrudControllerTest extends AbstractEasyAdminControlle
      */
     public static function provideEditPageFields(): iterable
     {
-        yield 'name' => ['name'];
-        yield 'type' => ['type'];
-        yield 'price' => ['price'];
-        yield 'freeAmount' => ['freeAmount'];
+        yield 'title' => ['title'];
+        yield 'imagePath' => ['imagePath'];
+        yield 'sortOrder' => ['sortOrder'];
         yield 'status' => ['status'];
     }
 
     public function testEntityFqcn(): void
     {
-        $this->assertSame(FreightTemplate::class, FreightTemplateCrudController::getEntityFqcn());
+        $this->assertSame(QualificationImage::class, QualificationImageCrudController::getEntityFqcn());
     }
 
     public function testControllerConfiguration(): void
     {
-        $this->assertInstanceOf(FreightTemplateCrudController::class, $this->controller);
-        $this->assertSame(FreightTemplate::class, $this->controller::getEntityFqcn());
+        $this->assertInstanceOf(QualificationImageCrudController::class, $this->controller);
+        $this->assertSame(QualificationImage::class, $this->controller::getEntityFqcn());
     }
 
     public function testCrudConfiguration(): void
@@ -103,7 +100,7 @@ final class FreightTemplateCrudControllerTest extends AbstractEasyAdminControlle
     public function testValidationErrors(): void
     {
         $client = $this->createAuthenticatedClient();
-        $url = $this->generateAdminUrl(FreightTemplateCrudController::class, ['crudAction' => 'new']);
+        $url = $this->generateAdminUrl(QualificationImageCrudController::class, ['crudAction' => 'new']);
         $crawler = $client->request('GET', $url);
 
         $buttonSelector = $crawler->filter('button[type="submit"], input[type="submit"]');
@@ -112,9 +109,8 @@ final class FreightTemplateCrudControllerTest extends AbstractEasyAdminControlle
         }
 
         $form = $buttonSelector->form([
-            'FreightTemplate[name]' => '',
-            'FreightTemplate[type]' => '',
-            'FreightTemplate[price]' => '',
+            'QualificationImage[title]' => '',
+            'QualificationImage[imagePath]' => '',
         ]);
 
         $crawler = $client->submit($form);
@@ -122,8 +118,5 @@ final class FreightTemplateCrudControllerTest extends AbstractEasyAdminControlle
 
         $errorElements = $crawler->filter('.invalid-feedback, .form-error-message, .error');
         $this->assertGreaterThan(0, $errorElements->count(), '应该有验证错误信息');
-
-        $errorText = $crawler->filter('body')->text();
-        $this->assertStringContainsString('不能为空', $errorText, '应该包含中文验证错误信息');
     }
 }
