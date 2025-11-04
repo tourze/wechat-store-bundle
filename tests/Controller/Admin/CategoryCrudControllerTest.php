@@ -26,7 +26,7 @@ final class CategoryCrudControllerTest extends AbstractEasyAdminControllerTestCa
 {
     private CategoryCrudController $controller;
 
-    protected function onSetUp(): void
+    protected function onAfterSetUp(): void
     {
         $this->controller = new CategoryCrudController();
     }

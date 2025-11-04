@@ -22,7 +22,7 @@ final class QualificationImageCrudControllerTest extends AbstractEasyAdminContro
 {
     private QualificationImageCrudController $controller;
 
-    protected function onSetUp(): void
+    protected function onAfterSetUp(): void
     {
         $this->controller = new QualificationImageCrudController();
     }

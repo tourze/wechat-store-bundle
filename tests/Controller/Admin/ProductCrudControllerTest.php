@@ -22,7 +22,7 @@ final class ProductCrudControllerTest extends AbstractEasyAdminControllerTestCas
 {
     private ProductCrudController $controller;
 
-    protected function onSetUp(): void
+    protected function afterEasyAdminSetUp(): void
     {
         $this->controller = new ProductCrudController();
     }
