@@ -22,7 +22,7 @@ final class FreightTemplateCrudControllerTest extends AbstractEasyAdminControlle
 {
     private FreightTemplateCrudController $controller;
 
-    protected function onAfterSetUp(): void
+    protected function afterEasyAdminSetUp(): void
     {
         $this->controller = new FreightTemplateCrudController();
     }

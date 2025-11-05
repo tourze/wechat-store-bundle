@@ -22,7 +22,7 @@ final class ServerMessageCrudControllerTest extends AbstractEasyAdminControllerT
 {
     private ServerMessageCrudController $controller;
 
-    protected function onAfterSetUp(): void
+    protected function afterEasyAdminSetUp(): void
     {
         $this->controller = new ServerMessageCrudController();
     }
